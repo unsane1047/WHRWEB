@@ -1,0 +1,7 @@
+rej_xacml:
+    resource: "@REJXacmlBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation

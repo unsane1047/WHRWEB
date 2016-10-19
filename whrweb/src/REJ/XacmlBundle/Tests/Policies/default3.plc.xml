@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicyId="SalesDataAccessRegionPolicy" RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable" Version="1.0">
+<Target>
+<AnyOf>
+<AllOf>
+<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">view</AttributeValue>
+<AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+</Match>
+</AllOf>
+</AnyOf>
+</Target>
+<Rule Effect="Permit" RuleId="Permit-Rule">
+<Condition>
+<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-at-least-one-member-of">
+<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">asia</AttributeValue>
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">eurpe</AttributeValue>
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">africa</AttributeValue>
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">america</AttributeValue>
+</Apply>
+<AttributeDesignator AttributeId="http://wso2.org/claims/region" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+</Apply>
+</Condition>
+<AdviceExpressions>
+<AdviceExpression AdviceId="Query1" AppliesTo="Permit">
+<AttributeAssignmentExpression AttributeId="input">
+<Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:string-concatenate">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">WHERE REGION = "</AttributeValue>
+<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+<AttributeDesignator AttributeId="http://wso2.org/claims/region" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+</Apply>
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">"</AttributeValue>
+</Apply>
+</AttributeAssignmentExpression>
+</AdviceExpression>
+<AdviceExpression AdviceId="Query2" AppliesTo="Permit">
+<AttributeAssignmentExpression AttributeId="input">
+<Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:string-concatenate">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">WHERE REGION = "</AttributeValue>
+<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+<AttributeDesignator AttributeId="http://wso2.org/claims/region" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+</Apply>
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">"</AttributeValue>
+</Apply>
+</AttributeAssignmentExpression>
+</AdviceExpression>
+</AdviceExpressions>
+</Rule>
+<Rule Effect="Permit" RuleId="Permit-Rule">
+<Condition>
+<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-is-in">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">global</AttributeValue>
+<AttributeDesignator AttributeId="http://wso2.org/claims/region" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+</Apply>
+</Condition>
+</Rule>
+<Rule Effect="Deny" RuleId="DenyRule"/>
+</Policy>

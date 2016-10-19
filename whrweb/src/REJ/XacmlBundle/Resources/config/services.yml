@@ -1,0 +1,23 @@
+services:
+#    rej_xacml.example:
+#        class: REJ\XacmlBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    rej_xacml.prp:
+        class: REJ\XacmlBundle\RetrievalPoints\Streaming
+        arguments: [ "%rej_xacml.policydir%", "%rej_xacml.combiner%" ]
+        public: false
+    rej_xacml.pdp.cache:
+        class: REJ\XacmlBundle\Cache\DecisionCache
+        arguments: ["rej_xacml", 1, "%rej_xacml.cachedir%"]
+        public: false
+    rej_xacml.pdp:
+        class: REJ\XacmlBundle\PolicyDecisionPoint
+        arguments: [ "@rej_xacml.prp" ]
+        calls:
+            - [setDecisionCache, ["@rej_xacml.pdp.cache"]]    
+            - [ setDebug, ["%rej_xacml.debug%"]]
+        public: false
+    rej_xacml.pep:
+        class: REJ\XacmlBundle\PolicyEnforcementPoint
+        arguments: [ "@rej_xacml.pdp" ]
+        public: true

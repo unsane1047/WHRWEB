@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=.8, minimum-scale=.8, maximum-scale=.8" />
+        <title>{% block title %}William Holland School of Lapidary Arts{% endblock %}</title>
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico')| escape( 'html_attr' ) }}" />
+		<link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico')| escape( 'html_attr' ) }}" />
+		<link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png')| escape( 'html_attr' ) }}"/>
+		{% block links %}{% endblock %}
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+		<h1 class="nocontent">{{ block('title') }}</h1>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

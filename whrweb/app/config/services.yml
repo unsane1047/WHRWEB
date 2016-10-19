@@ -1,0 +1,23 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    app.xacml_voter:
+        class: AppBundle\Security\Core\Authorization\Xacml\Voters\PepVoter
+        tags:
+            - { name: security.voter }
+        public: false
+        arguments:
+            - "$kernel.environment%"
+            - "@rej_xacml.pep"
+    app.twig_extension:
+        class: AppBundle\Twig\AppExtension
+        public: false
+        arguments: ['@router']
+        tags:
+            - { name: twig.extension }

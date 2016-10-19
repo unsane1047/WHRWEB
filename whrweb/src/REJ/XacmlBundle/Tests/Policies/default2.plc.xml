@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicyId="SalesDataAccessPolicy" RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable" Version="1.0">
+	<Target>
+		<AnyOf>
+			<AllOf>
+				<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">SalesData</AttributeValue>
+					<AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+				</Match>
+			</AllOf>
+		</AnyOf>
+	</Target>
+	<Rule Effect="Permit" RuleId="Rule-1">
+		<Target>
+			<AnyOf>
+				<AllOf>
+					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">view</AttributeValue>
+						<AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+					</Match>
+				</AllOf>
+			</AnyOf>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:3.0:function:any-of">
+				<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+				<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">SalePerson</AttributeValue>
+				<AttributeDesignator AttributeId="http://wso2.org/claims/role" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule Effect="Permit" RuleId="Rule-2">
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-at-least-one-member-of">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">view</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">share</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+					</Apply>
+					<AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:3.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">SaleManager</AttributeValue>
+					<AttributeDesignator AttributeId="http://wso2.org/claims/role" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule Effect="Deny" RuleId="Deny-Rule"/>
+</Policy>
