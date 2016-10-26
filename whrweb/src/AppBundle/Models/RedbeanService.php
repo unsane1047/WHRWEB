@@ -9,9 +9,9 @@ use \Exception;
 use \R;
 use \RedBeanPHP\OODBBean as BEAN;
 use AppBundle\Libraries\AppDateTime;
-use AppBundle\Model\Model;
-use AppBundle\Model\Collection;
-use AppBundle\Model\Connection_Details;
+use AppBundle\Models\Model;
+use AppBundle\Models\Collection;
+use AppBundle\Models\Connection_Details;
 
 class RedbeanService {
 	const READ_UNCOMMITTED = 'READ-UNCOMMITTED';
@@ -58,6 +58,10 @@ class RedbeanService {
 		return true;
 	}
 
+	public function setAuditVars( $login_id, $user_id ){
+		return R::exec( 'SET @user_id=?; SET @ login_id=?', [ $login_id, $user_id ] );
+	}
+
 	public function testConnection(){
 		return R::testConnection();
 	}
@@ -78,6 +82,25 @@ class RedbeanService {
 
 	public function freezeSchema( $freeze = true ){
 		return R::freeze( $freeze );
+	}
+
+	public function debug( $toggle = true, $pretty = true, $logOnly = false ){
+		$mode = 0;
+		if( $pretty && $logOnly )
+			$mode = 3;
+		else if( $logOnly )
+			$mode = 1;
+		else if( $pretty )
+			$mode = 2;
+		return R::debug( $toggle, $mode );
+	}
+
+	public function startLogging(){
+		return R::startLogging();
+	}
+
+	public function getLogs(){
+		return R::getLogs();
 	}
 
 	//entity management functions
@@ -659,17 +682,6 @@ NOWDOC;
 		}
 
 		return R::transaction( $callback );
-	}
-
-	public function debug( $toggle = true, $pretty = true, $logOnly = false ){
-		$mode = 0;
-		if( $pretty && $logOnly )
-			$mode = 3;
-		else if( $logOnly )
-			$mode = 1;
-		else if( $pretty )
-			$mode = 2;
-		return R::debug( $toggle, $mode );
 	}
 
 	######################

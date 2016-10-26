@@ -7,14 +7,16 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
-    app.xacml_voter:
-        class: AppBundle\Security\Core\Authorization\Xacml\Voters\PepVoter
-        tags:
-            - { name: security.voter }
+# this is a dirty override, but won't actually affect things in the long run, as it is actually a good idea for all firewalls, not just single firewalls
+    security.logout_listener:
+        class: AppBundle\Security\Http\Firewall\LogoutListener
         public: false
+        abstract: true
         arguments:
-            - "%kernel.environment%"
-            - "@rej_xacml.pep"
+            - "@security.token_storage"
+            - "@security.http_utils"
+            - "@security.logout.success_handler"
+            - {} #options
     app.twig_extension:
         class: AppBundle\Twig\AppExtension
         public: false
@@ -27,3 +29,40 @@ services:
         arguments:
             - "%redbean%"
             - "%kernel.environment%"
+    app.security.captcha_provider:
+        class:  AppBundle\Security\Captcha\CaptchaProvider
+        public: true
+        arguments: ['%recaptcha%', '@?session']
+    app.security.xacml_voter:
+        class: AppBundle\Security\Core\Authorization\Xacml\Voters\PepVoter
+        public: false
+        arguments:
+            - "%kernel.environment%"
+            - "@rej_xacml.pep"
+        tags:
+            - { name: security.voter }
+    app.authentication.form_entry_point:
+        class:  AppBundle\Security\Http\EntryPoint\webappFormLoginEntryPoint
+        public: false
+        abstract: true
+        arguments:
+            - '@http_kernel'
+    app.authentication.success_handler:
+        class:  AppBundle\Security\Http\Authentication\AuthenticationSuccessHandler
+        public: false
+        arguments:  ['@security.http_utils', {}]
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+    app.authentication.failure_handler:
+        class:  AppBundle\Security\Http\Authentication\AuthenticationFailureHandler
+        public: false
+        arguments:  ['@http_kernel', '@security.http_utils', {}, '@?logger', '@app.redbean']
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+    app.logout.success_handler:
+        class:  AppBundle\Security\Http\Logout\LogoutSuccessHandler
+        public: false
+        arguments:  ['@security.http_utils', '/', '@security.token_storage']
+    app.logout.handler:
+        class:  AppBundle\Security\Http\Logout\MessageSettingLogoutHandler
+        public: false

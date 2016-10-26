@@ -1,6 +1,22 @@
 imports:
     - { resource: config.yml }
 
+parameters:
+    redbean:
+        default:
+            type: "%database_type%"
+            host: "%database_host%"
+            port: "%database_port%"
+            name: "%database_name%"
+            user: "%database_user%"
+            password: "%database_password%"
+            env: "%database_env%"
+            frozen: false
+    recaptcha:
+        sitekey:       6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+        secretkey:     6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+        api:           https://www.google.com/recaptcha/api.js
+        session_var:   'hasCompletedCaptcha'
 framework:
     router:
         resource: "%kernel.root_dir%/config/routing_dev.yml"

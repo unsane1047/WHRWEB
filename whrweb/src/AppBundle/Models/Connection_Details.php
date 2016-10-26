@@ -45,13 +45,12 @@ class Connection_Details{
 			case 'pgsql':
 			case 'cubrid':
 				if( !isset( $config[ 'host' ] )
-					|| !isset( $config[ 'port' ] )
 					|| !isset( $config[ 'name' ] )
 					|| !isset( $config[ 'user' ] )
 					|| !isset( $config[ 'password' ] ) )
-					throw new \InvalidArgumentException( sprintf( 'database configuration for mysql, pgsql and cubrid database must include host, port, name, user and password. connection id "%s"', $connection_id ) );
+					throw new \InvalidArgumentException( sprintf( 'database configuration for mysql, pgsql and cubrid database must include host, name, user and password. connection id "%s"', $connection_id ) );
 				$this->host = (string)$config[ 'host' ];
-				$this->port = ( !empty( $config[ 'port' ] ) )? $config[ 'port' ]: NULL;
+				$this->port = ( isset( $config[ 'port' ] ) && !empty( $config[ 'port' ] ) )? $config[ 'port' ]: NULL;
 				$this->name = (string)$config[ 'name' ];
 				$this->user = ( !empty( $config[ 'user' ] ) )? $config[ 'user' ]: NULL;
 				$this->password = ( !empty( $config[ 'password' ] ) )? $config[ 'password' ]: NULL;
@@ -62,7 +61,7 @@ class Connection_Details{
 			break;
 		}
 
-		$this->frozen = ( ( isset( $config[ 'frozen' ] )? $config[ 'frozen' ]: true );
+		$this->frozen = ( ( isset( $config[ 'frozen' ] )? $config[ 'frozen' ]: true ) );
 	}
 
 	function freezeDatabase( $t = NULL ){
@@ -73,9 +72,6 @@ class Connection_Details{
 	}
 
 	function getConnectionString(){
-		if( !is_array( $this->details ) )
-			return NULL;
-
 		$string = $this->type . ':';
 
 		if( $this->type === 'sqlite' ){
@@ -106,6 +102,6 @@ class Connection_Details{
 	}
 
 	function getId(){
-		return $this->id
+		return $this->id;
 	}
 }

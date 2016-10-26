@@ -2,9 +2,9 @@
 
 namespace AppBundle\Security\Captcha;
 
-use Symfony\Component\HttpFoundation\Request,
-	ReCaptcha\ReCaptcha,
-	Symfony\Component\HttpFoundation\Session\Session;
+use ReCaptcha\ReCaptcha;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class CaptchaProvider{
 

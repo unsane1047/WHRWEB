@@ -4,13 +4,13 @@ namespace AppBundle\Security\Core\Authorization\Xacml\Voters;
 
 //needs a way to indicate if secondary subject has been overridden by supervisor for uac function or if they are a developer using sudo
 
-use REJ\XacmlBundle\Request as XacmlRequest,
-	AppBundle\Models\Model_User,
-	Symfony\Component\Security\Core\Authentication\Token\TokenInterface,
-	Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken,
-	Symfony\Component\Security\Core\Authorization\Voter\Voter,
-	Symfony\Component\Security\Core\Role\RoleInterface,
-	Symfony\Component\Security\Core\Role\SwitchUserRole;
+use REJ\XacmlBundle\Request as XacmlRequest;
+use AppBundle\Models\User;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
 class PepVoter extends Voter{
 	protected $env = 'prod';
@@ -69,7 +69,7 @@ class PepVoter extends Voter{
 			->addAttribute( 'subject', 'authenticated', 'boolean', $token->isAuthenticated() )
 			->addAttribute( 'subject', 'tokentype', 'string', $tokenType );
 
-		if( $accessSubject instanceOf Model_User ){
+		if( $accessSubject instanceOf User ){
 			$subject->addAttribute( 'subject', 'id', 'string', $accessSubject->unbox()->id )
 				->addAttribute( 'subject', 'enabled', 'boolean',  $accessSubject->isEnabled() )
 				->addAttribute( 'subject', 'locked', 'boolean', $accessSubject->isAccountNonLocked() )
@@ -77,7 +77,7 @@ class PepVoter extends Voter{
 				->addAttribute( 'subject', 'accountExpired', 'boolean', !$accessSubject->isAccountNonExpired() );
 		}
 
-		if( $secondarySubject instanceOf Model_User ){
+		if( $secondarySubject instanceOf User ){
 			$subject->addCategory( $subject->createCategory( 'recipient' )  )
 				->addAttribute( 'recipient', 'username', 'rfc822name', $secondarySubject->getUsername() )
 				->addAttribute( 'recipient', 'id', 'string', $secondarySubject->unbox()->id )

@@ -96,7 +96,10 @@ class AppDateTime extends \DateTime{
 		$this->format = $format;
 	}
 
-	function diff( DateTimeInterface $datetime2, $absolute = false ){
+	function diff( $datetime2, $absolute = NULL ){
+		if( !( $datetime2 instanceOf DateTimeInterface ) )
+			throw new \InvalidArgumentException( 'AppDateTime::diff can only accept objects implementing DateTimeInterface' );
+
 		$diff = parent::diff( $datetime2, $absolute );
 		range( 0, 0 ); //fixes a really weird bug where floating point numbers and range results are crapped on for one call after Datetime::diff() is called on some platforms
 

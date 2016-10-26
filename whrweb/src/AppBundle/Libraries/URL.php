@@ -147,6 +147,9 @@ class URL{
 			];
 		}
 
+		if( empty( $this->url[ 'query' ] ) )
+			$this->url[ 'query' ] = NULL;
+
 		return $this;
 	}
 
