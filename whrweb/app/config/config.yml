@@ -74,3 +74,14 @@ exercise_html_purifier:
         Core.Encoding: 'utf-8'
 rej_xacml:
     policydir: "%kernel.root_dir%/../app/Resources/xacmlPolicies"
+
+redbean:
+    database1:
+        type: "%database_type%"
+        host: "%database_host%"
+        port: "%database_port%"
+        name: "%database_name%"
+        user: "%database_user%"
+        password: "%database_password%"
+        env: "%database_env%"
+        frozen: "%database_frozen%"

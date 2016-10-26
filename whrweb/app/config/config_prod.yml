@@ -19,3 +19,6 @@ monolog:
             level: debug
         console:
             type:  console
+redbean:
+    database1:
+        frozen: false

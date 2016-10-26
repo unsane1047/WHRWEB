@@ -2,12 +2,14 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database_type:     mysql
-    database_host:     localhost
-    database_port:     ~
-    database_name:     ~
-    database_user:     ~
+    database_type: mysql
+    database_host: localhost
+    database_port: ~
+    database_name: ~
+    database_user: ~
     database_password: ~
+    database_env: any
+    database_frozen: false
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
@@ -24,3 +26,13 @@ parameters:
         secretkey:     6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
         api:           https://www.google.com/recaptcha/api.js
         session_var:   'hasCompletedCaptcha'
+
+    redbean:
+        default:
+            env: any
+            type: '%database_type%'
+            host: '%database_host%'
+            port: '%database_port%'
+            name: '%database_name%'
+            user: '%database_user%'
+            password: '%database_password%'

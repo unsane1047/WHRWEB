@@ -4,7 +4,7 @@ namespace AppBundle\Libraries;
 
 ######
 # AppDateTime object that deals with some of the problems of the \DateTime class and
-#   provides some simple convinience methods
+#   provides some simple convenience methods
 #####
 
 use \DateTime,

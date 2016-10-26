@@ -13,7 +13,7 @@ services:
             - { name: security.voter }
         public: false
         arguments:
-            - "$kernel.environment%"
+            - "%kernel.environment%"
             - "@rej_xacml.pep"
     app.twig_extension:
         class: AppBundle\Twig\AppExtension
@@ -21,3 +21,9 @@ services:
         arguments: ['@router']
         tags:
             - { name: twig.extension }
+    app.redbean:
+        class: AppBundle\Models\RedbeanService
+        public: true
+        arguments:
+            - "%redbean%"
+            - "%kernel.environment%"
