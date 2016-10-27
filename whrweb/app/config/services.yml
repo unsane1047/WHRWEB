@@ -17,6 +17,13 @@ services:
             - "@security.http_utils"
             - "@security.logout.success_handler"
             - {} #options
+    app.locale_listener:
+        class: AppBundle\EventListener\LocaleListener
+        public: true
+        arguments:
+            - '%kernel.default_locale%'
+        tags:
+            - { name: kernel.event_subscriber }
     app.twig_extension:
         class: AppBundle\Twig\AppExtension
         public: false

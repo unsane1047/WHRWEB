@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.getLocale()| escape( 'html_attr' ) }}" xml:lang="{{ app.request.getLocale()| escape( 'html_attr' ) }}">
     <head>
         <meta charset="UTF-8" />
+		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=.8, minimum-scale=.8, maximum-scale=.8" />
         <title>{% block title %}William Holland School of Lapidary Arts{% endblock %}</title>
 		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico')| escape( 'html_attr' ) }}" />
