@@ -26,13 +26,3 @@ parameters:
         secretkey:     6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
         api:           https://www.google.com/recaptcha/api.js
         session_var:   'hasCompletedCaptcha'
-
-    redbean:
-        default:
-            env: any
-            type: '%database_type%'
-            host: '%database_host%'
-            port: '%database_port%'
-            name: '%database_name%'
-            user: '%database_user%'
-            password: '%database_password%'

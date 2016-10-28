@@ -40,6 +40,14 @@ services:
         class:  AppBundle\Security\Captcha\CaptchaProvider
         public: true
         arguments: ['%recaptcha%', '@?session']
+    app.security.tokenProvider:
+        class: AppBundle\Security\JWT\JWT_JWSOneTimeTokenProvider
+        public: true
+        arguments:
+            - "%secret%"
+            - "@?requestStack"
+            - 60
+            - 3600
     app.security.xacml_voter:
         class: AppBundle\Security\Core\Authorization\Xacml\Voters\PepVoter
         public: false
