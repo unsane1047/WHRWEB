@@ -20,9 +20,8 @@ class View extends FOSView{
 	}
 	
 	public function setTemplate( $template ){
-        if (!(is_string($template) || $template instanceof TemplateReferenceInterface)) {
+        if( !( is_string( $template ) || $template instanceof TemplateReferenceInterface ) )
             throw new \InvalidArgumentException('The template should be a string or implement TemplateReferenceInterface');
-        }
 
 		$engine = $this->getEngine();
 		$locale = $this->locale;

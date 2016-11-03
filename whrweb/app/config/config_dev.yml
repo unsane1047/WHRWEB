@@ -46,5 +46,42 @@ monolog:
         #    type:   chromephp
         #    level:  info
 
-#swiftmailer:
-#    delivery_address: me@example.com
+swiftmailer:
+    default_mailer: spooled
+    mailers:
+        spooled:
+            transport: "%mailer_transport%"
+            host:      "%mailer_host%"
+            username:  "%mailer_user%"
+            password:  "%mailer_password%"
+            port:       587
+            encryption: tls
+            auth_mode: login
+            delivery_address: lapidary@windstream.net
+            spool:
+                type: file
+                path: "%kernel.root_dir%/../var/spool"
+        delayed:
+            transport: "%mailer_transport%"
+            host:      "%mailer_host%"
+            username:  "%mailer_user%"
+            password:  "%mailer_password%"
+            port:       587
+            encryption: tls
+            auth_mode: login
+            delivery_address: lapidary@windstream.net
+            spool:
+                type: file
+                path: "%kernel.root_dir%/../var/spool"
+        instant:
+            transport: "%mailer_transport%"
+            host:      "%mailer_host%"
+            username:  "%mailer_user%"
+            password:  "%mailer_password%"
+            port:       587
+            encryption: tls
+            auth_mode: login
+            delivery_address: lapidary@windstream.net
+            spool:
+                type: file
+                path: "%kernel.root_dir%/../var/spool"

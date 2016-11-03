@@ -17,6 +17,7 @@ parameters:
     mailer_host:       smtp.gmail.com
     mailer_user:       ~
     mailer_password:   ~
+	mailer_account_message_from_address: no-reply@example.com
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt

@@ -1,0 +1,9 @@
+{% block flashmessages %}
+	<section class="flashmessages">
+		{% for type, messageSet in flashmessages %}
+			{% for message in messageSet %}
+				<div class="flashmessage {{ type| escape( 'html_attr' ) }}">{{ message| trans }}</div>
+			{% endfor %}
+		{% endfor %}
+	</section>
+{% endblock %}

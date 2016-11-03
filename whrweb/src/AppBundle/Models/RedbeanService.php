@@ -655,7 +655,7 @@ NOWDOC;
 			case self::READ_UNCOMMITTED:
 			case self::READ_COMMITTED:
 			case self::REPEATABLE_READ:
-			case self::SERIALIZEABLE:
+			case self::SERIALIZABLE:
 				R::exec( 'SET TRANSACTION ISOLATION LEVEL ' . $lev );
 			break;
 		}
@@ -811,6 +811,10 @@ NOWDOC;
 	######################
 	# direct SQL functions
 	######################
+
+	public function genSlots( array $arr ){
+		return R::genSlots( $arr );
+	}
 
 	public function exec( $sql, array $args = array(), $conn_id = NULL ){
 		if( $conn_id !== NULL )

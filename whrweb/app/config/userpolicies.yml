@@ -1,0 +1,23 @@
+#this file holds settings for the user login systems that effect how the algorithms embedded there are applied
+parameters:
+    #combined with the set garbage collection of sessions to idle out sessions that aren't being used
+    session_idle_divisor: 2
+    userpolicies:
+        #periods for expiring accounts and passwords
+        expiryperiod: 63115200 # 2 years in seconds
+        passwordexpiryperiod: 31557600 # 1 year in seconds
+        #definitions for password strength algorithms
+        minpasswordlength: 8
+        minpasswordbrutestrength: 288
+        minpasswordentropy: 1
+        passwordentropythreshold: 3
+        minpasswordoverallstrength: 65
+        #variables that modify the login brute force prevention algorithms
+        failedloginperiod: 15 minute
+        logincaptchathreshold: 4
+        loginiplockoutthreshold: 150
+        loginbackoffstepdefinition:
+            - { low: 20, high: 50, delay: 1 }
+            - { low: 50, high: 90, delay: 2 }
+            - { low: 90, high: 150, delay: 3 }
+            - { low: 150, high: ~, delay: 4 }

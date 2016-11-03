@@ -20,7 +20,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler{
 				$login->user_id = $user->unbox()->id;
 				$login->username = $user->getUsername();
 				$login->ip_address = inet_pton( $request->server->get( "REMOTE_ADDR", '127.0.0.1' ) );
-				$login->attempted = new \AppDateTime();
+				$login->attempted = new AppDateTime();
 				$login->invalidated = false;
 				$login->getService()->begin();
 					$login->persist();

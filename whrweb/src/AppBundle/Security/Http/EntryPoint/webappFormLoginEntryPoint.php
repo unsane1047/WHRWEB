@@ -13,7 +13,7 @@ class webappFormLoginEntryPoint extends FormAuthenticationEntryPoint{
 			$sess->start();
 		if( $sess !== NULL && $sess->isStarted() ){
 			if( $authException !== NULL )
-				$sess->getFlashBag()->add( 'warning', $authException->getMessageKey() );
+				$sess->getFlashBag()->add( 'login_warning', $authException->getMessageKey() );
 		}
 		return parent::start( $request, $authException );
 	}

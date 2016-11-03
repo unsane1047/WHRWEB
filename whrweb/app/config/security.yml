@@ -1,20 +1,35 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
+    session_fixation_strategy: migrate
+    hide_user_not_found: false
+    access_decision_manager:
+        strategy: unanimous
+        allow_if_all_abstain: false
+        allow_if_equal_granted_denied: false
+    access_control:
+        - { path: ^/users/*, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+
+    encoders:
+        Symfony\Component\Security\Core\User\USerInterface: bcrypt
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory:
-            memory: ~
+#        in_memory:
+#            memory: ~
+        webservice:
+            id: app.security.formlogin.user_provider
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
         main:
             anonymous: ~
+            entry_point: app.authentication.form_entry_point
+            user_checker: app.security.user_checker
+            provider: webservice
             # activate different ways to authenticate
 
             # http_basic: ~
@@ -22,3 +37,23 @@ security:
 
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+
+            mod_form_login:
+                login_path: login
+                check_path: login
+                username_parameter: "authentication[_username]"
+                password_parameter: "authentication[_password]"
+                csrf_parameter: "authentication[_token]"
+                csrf_token_generator: security.csrf.token_manager
+                failure_handler: app.authentication.failure_handler
+                success_handler: app.authentication.success_handler
+                default_target_path: frontlanding
+                use_referer: true
+            logout:
+                path: logout
+                target: /
+                invalidate_session: true
+                success_handler: app.logout.success_handler
+                handlers: [ app.logout.handler ]
+                csrf_token_generator: security.csrf.token_manager
+                csrf_parameter: "_csrf_token"

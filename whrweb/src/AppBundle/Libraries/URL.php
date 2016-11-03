@@ -2,7 +2,7 @@
 
 // src/AppBundle/Libraries/URL.php
 
-namespace AppBundle\Libraries
+namespace AppBundle\Libraries;
 
 use AppBundle\Libraries\UnicodeString;
 
@@ -56,7 +56,9 @@ class URL{
 	private $url;
 	private $abs;
 
-	function __construct( $url = '', $s = $_SERVER, $use_forwarded_host = false ){
+	function __construct( $url = '', array $s = [], $use_forwarded_host = false ){
+		if( count( $s ) < 1 )
+			$s = $_SERVER;
 		$this->abs = false;
 		$this->setURL( $url );
 		$this->baseURL = [
@@ -95,7 +97,7 @@ class URL{
 			return $this->getBaseURL();
 
 		if( $name === 'path array' )
-			return explode( '/', $this->url[ 'path' ] )
+			return explode( '/', $this->url[ 'path' ] );
 
 		if( isset( $this->url[ $name ] ) )
 			return $this->url[ $name ];
@@ -115,7 +117,7 @@ class URL{
 	}
 
 	function setURL ( $string ){
-		$url = ( new UnicodeString( $url ) )->encode();
+		$url = ( new UnicodeString( $string ) )->encode();
 		$this->url = $this->split_url( $url, true );
 
 		#this was added here to make this function the way a browser does and add scheme if the url seems to be a hostname rather than a path
@@ -154,8 +156,8 @@ class URL{
 	}
 
 	function setBaseURL( $string ){
-			$baseURL = ( new UnicodeString( $baseURL ) )->encode();
-			$this->baseURL = $this->split_url( $url, true, true );
+			$baseURL = ( new UnicodeString( $string ) )->encode();
+			$this->baseURL = $this->split_url( $baseURL, true, true );
 			if( $this->baseURL === false ){
 				$this->baseURL = [
 					'scheme' => NULL,

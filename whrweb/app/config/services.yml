@@ -7,6 +7,12 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+# not yet implemented
+#    app.file_type_extension:
+#        class: AppBundle\Forms\Extension\FileTypeExtension
+#        tags:
+#            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
 # this is a dirty override, but won't actually affect things in the long run, as it is actually a good idea for all firewalls, not just single firewalls
     security.logout_listener:
         class: AppBundle\Security\Http\Firewall\LogoutListener
@@ -17,6 +23,11 @@ services:
             - "@security.http_utils"
             - "@security.logout.success_handler"
             - {} #options
+    app.session.idle_listener:
+        class: AppBundle\Security\Core\Authentication\Session\SessionIdleListener
+        arguments: ['@security.token_storage', '@app.authentication.form_entry_point', 'main', '%kernel.secret%', '%session_idle_divisor%']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
     app.locale_listener:
         class: AppBundle\EventListener\LocaleListener
         public: true
@@ -56,12 +67,20 @@ services:
             - "@rej_xacml.pep"
         tags:
             - { name: security.voter }
+    app.security.user_checker:
+        class: AppBundle\Security\Core\User\AppUserChecker
+        arguments: ['%userpolicies%']
+    app.security.formlogin.user_provider:
+        class: AppBundle\Security\Core\User\MariaDBUserProvider
+        arguments: ['@app.redbean']
     app.authentication.form_entry_point:
         class:  AppBundle\Security\Http\EntryPoint\webappFormLoginEntryPoint
         public: false
-        abstract: true
         arguments:
             - '@http_kernel'
+            - '@security.http_utils'
+            - 'login'
+            - true
     app.authentication.success_handler:
         class:  AppBundle\Security\Http\Authentication\AuthenticationSuccessHandler
         public: false
@@ -78,6 +97,37 @@ services:
         class:  AppBundle\Security\Http\Logout\LogoutSuccessHandler
         public: false
         arguments:  ['@security.http_utils', '/', '@security.token_storage']
+    app.security.authentication.provider.dao:
+        class:  AppBundle\Security\Core\Authentication\Provider\WebappDaoAuthenticationProvider
+        abstract: true
+        public: false
+        arguments:
+            - '' #user provider
+            - '' #user checker
+            - '' #provider-shared Key
+            - '@security.encoder_factory'
+            - '%security.authentication.hide_user_not_found%'
+            - '@request_stack'
+            - '@app.redbean'
+            - '@?app.security.captcha_provider'
+            - '%userpolicies%'
+    app.security.authentication.listener.form:
+        class:  AppBundle\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener
+        abstract: true
+        public: false
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@security.authentication.session_strategy'
+            - '@security.http_utils'
+            - ''
+            - '@app.authentication.success_handler'
+            - '@app.authentication.failure_handler'
+            - {}
+            - "@=service('logger') === null ? null : service('logger')"
+            - "@=service('event_dispatcher') === null ? null : service('event_dispatcher')"
+            - "@=null"
+            - '%userpolicies%'
     app.logout.handler:
         class:  AppBundle\Security\Http\Logout\MessageSettingLogoutHandler
         public: false

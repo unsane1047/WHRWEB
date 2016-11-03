@@ -9,6 +9,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class LocaleListener implements EventSubscriberInterface{
 	private $defaultLocale;
 	private $supportedLocales;
+	private $setAcceptHeader = false;
 
 	public function __construct( $defaultLocale = 'en_US', $supportedLocales = [] ){
 		$this->defaultLocale = $defaultLocale;
@@ -22,8 +23,10 @@ class LocaleListener implements EventSubscriberInterface{
 			if( !$request->hasPreviousSession() ){
 				if( $locale = $request->attributes->get( '_locale' ) )
 					$request->setLocale( $locale );
-				else
+				else{
 					$request->setLocale( $request->getPreferredLanguage( $this->supportedLocales ) );
+					$this->setAcceptHeader = true;
+				}
 				return;
 			}
 
@@ -56,6 +59,8 @@ class LocaleListener implements EventSubscriberInterface{
 			$request->getSession()->set( '_locale', $locale );
 			$request->getSession()->set( '_localePriority', $localePriority );
 			$request->setLocale( $locale );
+			if( $localePriority === 'accept' )
+				$this->setAcceptHeader = true;
 				
 	}
 
@@ -63,6 +68,8 @@ class LocaleListener implements EventSubscriberInterface{
 		$request = $event->getRequest();
 		$response = $event->getResponse();
 		$response->headers->set( 'Content-Language', $request->getLocale() );
+		if( $this->setAcceptHeader )
+			$response->setVary( 'Accept-Language' );
 	}
 
 	public static function getSubscribedEvents(){

@@ -5,9 +5,9 @@
 # String object for making working with Unicode Strings easier in PHP
 #######
 
-namespace AppBundle\Libraries
+namespace AppBundle\Libraries;
 
-use AppBundle/Libraries/PhoneticMatch;
+use AppBundle\Libraries\PhoneticMatch;
 
 class UnicodeString{
 	const byteOrderMark = '/^\x{FEFF}/u';
@@ -32,6 +32,7 @@ class UnicodeString{
 		$this->string = mb_convert_encoding( $string, 'UTF-8', $encoding );
 		mb_substitute_character( $oldSub );
 		$this->string = $this->normalize( $this->string );
+		return $this;
 	}
 
 	public function __construct( $string = '', $encoding = 'UTF-8' ){
@@ -69,7 +70,7 @@ class UnicodeString{
 		return $string;
 	}
 
-	function entropy(){
+	public function entropy(){
 		$h = 0;
 		$size = mb_strlen( $this->string, 'UTF-8' );
 		foreach( self::mb_count_chars( $this->string, 1, 'UTF-8' ) as $v ){
@@ -79,11 +80,12 @@ class UnicodeString{
 		return $h;
 	}
 
-	function removeBOM(){
+	public function removeBOM(){
 		$this->string = preg_replace( self::byteOrderMark, '', $this->string );
+		return $this;
 	}
 
-	function areEqual( UnicodeString ...$candidates ){
+	public function areEqual( UnicodeString ...$candidates ){
 		foreach( $candidates as $str ){
 			if( $this->encode( 'UTF8', self::UTF8SUBCHARINT) === $str->encode( 'UTF8', self::UTF8SUBCHARINT ) )
 				return true;
@@ -91,7 +93,7 @@ class UnicodeString{
 		return false;
 	}
 
-	function areFuzzyEqual( $type = '', UnicodeString ...$candidates ){
+	public function areFuzzyEqual( $type = '', UnicodeString ...$candidates ){
 		$match = new PhoneticMatch();
 
 		$string = $this->__toString();
@@ -102,53 +104,59 @@ class UnicodeString{
 		return $match->match( $string, $compareTo );
 	}
 
-	function getFuzzyMatchKeys( $type = '' ){
+	public function getFuzzyMatchKeys( $type = '' ){
 		$match = new PhoneticMatch();
 		return $match->compute( $this->__toString(), $type );
 	}
 
-	function startsWith( $needle ){
+	public function atBeginning( $needle ){
 		return self::startsWith( $this->string, $needle );
 	}
 
-	function endsWith( $needle ){
+	public function atEnd( $needle ){
 		return self::endsWith( $this->string, $needle );
 	}
 
-	function trim( $trimchars = '' ){
+	public function trim( $trimchars = '' ){
 		$this->string = preg_replace( '/^[\pZ\pC' . $trimchars . ']+|[\pZ\pC' . $trimchars . ']+$/u', '', $this->string );
+		return $this;
 	}
 
-	function replaceWordSeperators( $spaceChar = ' ' ){
+	public function replaceWordSeperators( $spaceChar = ' ' ){
 		if( $spaceChar === ' ' )
 			$this->string = preg_replace( self::wordSeperators2, $spaceChar, $this->string );
 		else
 			$this->string = preg_replace( self::wordSeperators, $spaceChar, $this->string );
+		return $this;
 	}
 
-	function replaceNewlineChars( $replacement = "\n" ){
+	public function replaceNewlineChars( $replacement = "\n" ){
 		$this->string = preg_replace( '/' . self::newlineChars . '/u', $replacement, $this->string );
+		return $this;
 	}
 
 	 #I assume this works because inserting any of the control characters
 	 #actually causes this function to die with invalid utf8
-	function replaceControlChars( $replacement = '' ){
+	public function replaceControlChars( $replacement = '' ){
 		$this->string = preg_replace( '/' . self::controlChars . '/u', $replacement, $this->string);
+		return $this;
 	}
 
-	function replaceTabChars( $replacement = '	' ){
+	public function replaceTabChars( $replacement = '	' ){
 		$this->string = preg_replace( '/' . self::tabChars . '/u', $replacement, $this->string );
+		return $this;
 	}
 
-	function asSingleLineInputSpacesOnly( $spaceChar = ' ' ){
-		$this->replaceNewlineChars( $spaceChar );
-		$this->replaceTabChars( $spaceChar );
-		$this->replaceControlChars( $spaceChar );
-		$this->replaceWordSeperators( $spaceChar );
+	public function asSingleLineInputSpacesOnly( $spaceChar = ' ' ){
+		$this->replaceNewlineChars( $spaceChar )
+			->replaceTabChars( $spaceChar )
+			->replaceControlChars( $spaceChar )
+			->replaceWordSeperators( $spaceChar );
+		return $this;
 	}
 
 	#take char and return unicode code point
-	static function uniord($c) {
+	public static function uniord($c) {
 		if (ord($c{0}) >=0 && ord($c{0}) <= 127)
 			return ord($c{0});
 		if (ord($c{0}) >= 192 && ord($c{0}) <= 223)
@@ -167,7 +175,7 @@ class UnicodeString{
 	}
 
 	# sort of like count_chars for mb, no mode 0, 2, or 4 because the just don't work with mb charsets
-	static function mb_count_chars( $input = '', $mode = 1, $encoding = 'UTF-8' ) {
+	public static function mb_count_chars( $input = '', $mode = 1, $encoding = 'UTF-8' ) {
 		$mode = (int)$mode;
 		if( $mode == 2 || $mode == 4 || $mode > 4 || $mode <= 0 )
 			throw new \Exception( 'Unsupported mb_count_chars mode.' );
@@ -195,7 +203,7 @@ class UnicodeString{
 	}
 
 	# change the encoding specified in standard terms to a name useable by mysql
-	static function mysqlEncodingName( $encoding = 'UTF-8' ){
+	public static function mysqlEncodingName( $encoding = 'UTF-8' ){
 		$set_translation = array(
 				'Big5' => 'big5',
 				'DEC8' => 'dec8',
@@ -246,7 +254,7 @@ class UnicodeString{
 		return $to_encoding;
 	}
 
-	static function multi_implode( $glue = '', $array ){
+	public static function multi_implode( $glue = '', $array ){
 		$ret = array();
 		foreach( $array as $item ){
 			if( is_array( $item ) )
@@ -265,7 +273,7 @@ class UnicodeString{
      * @param Integer $length The string length.
      * @return String The randomly generated string.
      */
-	static function randomString( $length ){
+	public static function randomString( $length ){
 		$seed = '`A~B!C1D@E2F#G3H$I4J%K5L^M6N&O7P*Q8R(S9T)U0V_W-X+Y=Z{a[b}c]d|e:f;g"h\'i<j,q>l.m?n\\o/pqrtsuvwxyz';
 		$max = strlen( $seed ) - 1;
 
@@ -276,7 +284,7 @@ class UnicodeString{
 		return new static( $string );
 	}
 
-	static function startsWith( $haystack, $needle ){
+	public static function startsWith( $haystack, $needle ){
 		if( !is_array( $needle ) ){
 			$length = strlen( $needle );
 			return ( substr( $haystack, 0, $length ) === $needle );
@@ -293,7 +301,7 @@ class UnicodeString{
 		}
 	}
 
-	static function endsWith( $haystack, $needle ){
+	public static function endsWith( $haystack, $needle ){
 		if( !is_array( $needle ) )
 			return ( substr( $haystack, -strlen( $needle ) ) === $needle );
 		else{
